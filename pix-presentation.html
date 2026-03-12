@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Découvrez PIX — Défi Interactif</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --retro-teal:   #127676;
+  --retro-orange: #E4632E;
+  --retro-jaune:  #E3A535;
+  --retro-ink:    #0D1617;
+  --retro-paper:  #F2EFE6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--retro-ink) url('background.jpg') center center / cover fixed;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 20px;
+}
+.page-frame {
+  position: relative;
+  background: var(--retro-paper);
+  border: 4px solid var(--retro-orange);
+  border-radius: 24px 8px 24px 8px;
+  max-width: 1020px; width: 100%;
+  overflow: hidden;
+}
+.corner-svg { position: absolute; width: 72px; height: 72px; z-index: 10; pointer-events: none; }
+.corner-svg.tl { top:0; left:0; }
+.corner-svg.tr { top:0; right:0; transform:scaleX(-1); }
+.corner-svg.bl { bottom:0; left:0; transform:scaleY(-1); }
+.corner-svg.br { bottom:0; right:0; transform:scale(-1,-1); }
+
+header { background: var(--retro-teal); padding: 24px 48px 18px; text-align: center; }
+header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 700;
+  letter-spacing: 0.18em; color: var(--retro-jaune);
+  text-transform: uppercase; text-shadow: 3px 3px 0 var(--retro-ink);
+}
+header p {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.8rem, 2vw, 1rem); letter-spacing: 0.1em;
+  color: var(--retro-paper); margin-top: 6px; text-transform: uppercase;
+}
+
+/* TEASER */
+.teaser {
+  background: var(--retro-ink); padding: 28px 36px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.teaser::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(18,118,118,0.07) 18px, rgba(18,118,118,0.07) 20px);
+}
+.teaser-eyebrow { font-family:'Oswald',sans-serif; font-size:0.75rem; letter-spacing:0.25em; color:var(--retro-orange); text-transform:uppercase; margin-bottom:10px; position:relative; }
+.teaser-title { font-family:'Oswald',sans-serif; font-size:clamp(1.4rem,4vw,2.2rem); font-weight:700; letter-spacing:0.1em; color:var(--retro-paper); text-transform:uppercase; line-height:1.2; position:relative; margin-bottom:14px; }
+.teaser-title span { color:var(--retro-jaune); }
+.teaser-desc { font-size:clamp(0.85rem,1.8vw,0.98rem); color:#b8cece; line-height:1.65; max-width:600px; margin:0 auto 22px; position:relative; }
+.teaser-desc strong { color:var(--retro-jaune); font-weight:600; }
+.steps { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; position:relative; margin-bottom:20px; }
+.step { display:flex; align-items:center; gap:8px; background:rgba(18,118,118,0.18); border:1.5px solid var(--retro-teal); border-radius:50px; padding:8px 16px; color:var(--retro-paper); font-size:0.82rem; font-weight:500; }
+.step-num { background:var(--retro-teal); color:var(--retro-paper); width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-size:0.85rem; font-weight:700; flex-shrink:0; }
+.step-arrow { color:var(--retro-orange); font-size:1.1rem; align-self:center; }
+.prize-badge { display:inline-flex; align-items:center; gap:10px; background:var(--retro-jaune); color:var(--retro-ink); border:3px solid var(--retro-orange); border-radius:50px; padding:10px 22px; font-family:'Oswald',sans-serif; font-size:0.95rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; position:relative; animation:badge-pulse 2.5s ease-in-out infinite; }
+@keyframes badge-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(227,165,53,0.4);}50%{box-shadow:0 0 0 8px rgba(227,165,53,0);} }
+.prize-badge .trophy { font-size:1.3rem; }
+
+.sep { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--retro-teal); font-size:1.4rem; padding:0 32px; }
+.sep::before,.sep::after { content:''; flex:1; height:2px; background:linear-gradient(to right,transparent,var(--retro-teal)); }
+.sep::after { background:linear-gradient(to left,transparent,var(--retro-teal)); }
+
+/* ACCORDION */
+.accordion { margin:0 28px 4px; border:2px solid var(--retro-teal); border-radius:16px 6px 16px 6px; overflow:hidden; }
+.accordion-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:var(--retro-teal); cursor:pointer; user-select:none; }
+.accordion-header h2 { font-family:'Oswald',sans-serif; font-size:1rem; font-weight:600; letter-spacing:0.1em; color:var(--retro-paper); text-transform:uppercase; }
+.accordion-header .acc-icon { color:var(--retro-jaune); font-size:1.2rem; transition:transform 0.3s; font-weight:700; }
+.accordion-header.open .acc-icon { transform:rotate(180deg); }
+.accordion-body { display:none; padding:20px; background:var(--retro-paper); }
+.accordion-body.open { display:block; }
+.acc-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:600px) { .acc-grid { grid-template-columns:1fr; } }
+.acc-card { background:white; border:2px solid var(--retro-teal); border-radius:16px 6px 16px 6px; box-shadow:inset 0 0 0 1.5px var(--retro-orange); padding:16px; }
+.acc-card h3 { font-family:'Oswald',sans-serif; font-size:0.9rem; font-weight:600; letter-spacing:0.08em; color:var(--retro-teal); text-transform:uppercase; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--retro-teal); }
+.acc-card p,.acc-card li { font-size:0.85rem; line-height:1.6; color:var(--retro-ink); }
+.acc-card ul { padding-left:16px; margin-top:8px; }
+.acc-card li { margin-bottom:4px; }
+.highlight-notice {
+  grid-column:1/-1;
+  position: relative;
+  background: linear-gradient(135deg, var(--retro-jaune) 0%, var(--retro-orange) 100%);
+  color: var(--retro-ink);
+  border: 3px solid var(--retro-teal);
+  border-radius: 14px 5px 14px 5px;
+  padding: 18px 24px 18px 20px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+  transform: rotate(-1deg);
+  box-shadow: 0 0 0 3px var(--retro-jaune), 0 6px 24px rgba(228,99,46,0.35);
+  animation: notice-glow 2.5s ease-in-out infinite;
+}
+@keyframes notice-glow {
+  0%,100% { box-shadow: 0 0 0 3px var(--retro-jaune), 0 6px 24px rgba(228,99,46,0.3); }
+  50%      { box-shadow: 0 0 0 5px var(--retro-jaune), 0 6px 36px rgba(228,99,46,0.6); }
+}
+.highlight-notice .notice-badge {
+  position: absolute;
+  top: -13px; right: 16px;
+  background: var(--retro-teal);
+  color: var(--retro-jaune);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 50px;
+  border: 2px solid var(--retro-jaune);
+}
+
+/* GAME ZONE */
+.game-zone { display:grid; grid-template-columns:1fr 1fr; gap:0; margin:0 28px 28px; border:2px solid var(--retro-teal); border-radius:20px 6px 20px 6px; overflow:hidden; box-shadow:inset 0 0 0 2px var(--retro-orange); }
+@media (max-width:700px) { .game-zone { grid-template-columns:1fr; margin:0 16px 24px; } }
+
+/* QCM PANEL */
+.qcm-panel { padding:22px; border-right:2px dashed rgba(18,118,118,0.35); background:white; display:flex; flex-direction:column; }
+@media (max-width:700px) { .qcm-panel { border-right:none; border-bottom:2px dashed rgba(18,118,118,0.35); } }
+.panel-label { font-family:'Oswald',sans-serif; font-size:0.72rem; letter-spacing:0.2em; color:var(--retro-orange); text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.panel-label::after { content:''; flex:1; height:1px; background:var(--retro-orange); opacity:0.3; }
+.progress-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.q-label { font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:0.07em; color:var(--retro-teal); white-space:nowrap; min-width:100px; }
+.progress-bg { flex:1; height:10px; background:var(--retro-ink); border-radius:50px; border:1.5px solid var(--retro-teal); overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(to right,var(--retro-teal),var(--retro-orange),var(--retro-jaune)); border-radius:50px; transition:width 0.5s ease; width:0%; }
+.question-box { background:var(--retro-paper); border:2px solid var(--retro-teal); border-radius:16px 6px 16px 6px; padding:16px 18px; margin-bottom:12px; flex-shrink:0; }
+.question-text { font-size:0.95rem; font-weight:600; color:var(--retro-ink); line-height:1.5; margin-bottom:14px; }
+.options-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.option-btn { width:100%; text-align:left; background:white; border:1.5px solid var(--retro-teal); border-radius:8px; padding:10px 14px; font-family:'Inter',sans-serif; font-size:0.85rem; color:var(--retro-ink); cursor:pointer; transition:all 0.18s; display:flex; align-items:center; gap:8px; }
+.option-btn .opt-letter { width:22px; height:22px; border-radius:50%; background:var(--retro-teal); color:white; font-size:0.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Oswald',sans-serif; }
+.option-btn:hover:not(:disabled) { background:var(--retro-jaune); border-color:var(--retro-orange); transform:translateX(3px); }
+.option-btn:hover:not(:disabled) .opt-letter { background:var(--retro-orange); }
+.option-btn.correct { background:var(--retro-teal); border-color:var(--retro-teal); color:white; font-weight:600; }
+.option-btn.correct .opt-letter { background:rgba(255,255,255,0.3); }
+.option-btn.wrong { background:#fde8de; border-color:var(--retro-orange); color:var(--retro-orange); opacity:0.55; cursor:not-allowed; }
+.option-btn:disabled { cursor:not-allowed; }
+.feedback-zone { min-height:0; }
+.feedback-box { border-radius:8px; padding:10px 14px; margin-bottom:10px; font-size:0.83rem; line-height:1.5; font-weight:500; }
+.feedback-box.success { background:#e6f4f4; border:1.5px solid var(--retro-teal); color:var(--retro-teal); }
+.feedback-box.error { background:#fde8de; border:1.5px solid var(--retro-orange); color:#a33a12; }
+.pill-btn { display:inline-flex; align-items:center; gap:0; border-radius:50px; border:2.5px solid var(--retro-teal); overflow:hidden; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.88rem; letter-spacing:0.08em; font-weight:600; text-transform:uppercase; transition:transform 0.2s,box-shadow 0.2s; background:none; }
+.pill-btn:hover { transform:scale(1.04); box-shadow:0 4px 14px rgba(18,118,118,0.25); }
+.pill-btn .pill-label { background:var(--retro-jaune); color:var(--retro-ink); padding:9px 18px; }
+.pill-btn .pill-icon { background:var(--retro-orange); color:white; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:1rem; border-radius:50%; margin:-2px; border:2.5px solid var(--retro-teal); }
+.quiz-done { display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:28px 16px; flex:1; }
+.quiz-done.visible { display:flex; }
+.quiz-done .big-trophy { font-size:3.5rem; margin-bottom:12px; animation:spin-trophy 0.6s ease-out; }
+@keyframes spin-trophy { from{transform:rotate(-20deg) scale(0.5);}to{transform:rotate(0) scale(1);} }
+.quiz-done p { font-family:'Oswald',sans-serif; font-size:1.1rem; letter-spacing:0.08em; color:var(--retro-teal); text-transform:uppercase; margin-bottom:6px; }
+.quiz-done small { font-size:0.83rem; color:#555; line-height:1.5; max-width:200px; }
+
+/* PUZZLE PANEL */
+.puzzle-panel { padding:22px 20px; background:var(--retro-paper); display:flex; flex-direction:column; align-items:center; }
+.puzzle-header { width:100%; display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.puzzle-panel .panel-label { margin-bottom:0; }
+.piece-counter { display:flex; gap:4px; align-items:center; }
+.piece-dot { width:10px; height:10px; border-radius:50%; border:1.5px solid var(--retro-teal); background:transparent; transition:background 0.4s; }
+.piece-dot.filled { background:var(--retro-teal); }
+
+.puzzle-wrap { position:relative; width:100%; max-width:320px; }
+.puzzle-container {
+  position:relative; width:100%; padding-bottom:100%;
+  border:2.5px solid var(--retro-teal); border-radius:4px;
+  overflow:hidden; background:var(--retro-ink);
+  transition:transform 0.3s, box-shadow 0.4s;
+}
+.puzzle-container.complete { cursor:pointer; animation:glow-pulse 1.5s ease-in-out infinite; }
+@keyframes glow-pulse { 0%,100%{box-shadow:0 0 0 3px var(--retro-jaune),0 0 18px rgba(227,165,53,0.4);}50%{box-shadow:0 0 0 3px var(--retro-jaune),0 0 40px rgba(227,165,53,0.75);} }
+.puzzle-container:hover.complete { transform:scale(1.02); }
+
+/* Pieces — NO CSS transition, managed per-element in JS */
+.puzzle-piece {
+  position:absolute;
+  background-repeat:no-repeat;
+  border:1px solid rgba(18,118,118,0.25);
+  z-index:1;
+}
+.puzzle-piece.unplaced { opacity:0.9; }
+.puzzle-piece.placed { opacity:1; border-color:var(--retro-teal); }
+.puzzle-piece.placing { box-shadow:0 0 0 2px var(--retro-jaune),0 0 10px rgba(227,165,53,0.5); z-index:2; }
+
+/* Empty cell indicator */
+.empty-cell {
+  position:absolute; z-index:0;
+  background:rgba(18,118,118,0.07);
+  border:1.5px dashed rgba(18,118,118,0.4);
+  border-radius:3px;
+  pointer-events:none;
+}
+
+/* Puzzle flash */
+.puzzle-flash { position:absolute; inset:0; background:var(--retro-jaune); opacity:0; pointer-events:none; animation:flash-anim 0.4s ease-out forwards; z-index:20; }
+@keyframes flash-anim { 0%{opacity:0.4;}100%{opacity:0;} }
+
+.puzzle-reward { margin-top:14px; width:100%; max-width:320px; background:var(--retro-ink); border:1.5px solid var(--retro-teal); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:10px; }
+.puzzle-reward .reward-icon { font-size:1.5rem; flex-shrink:0; }
+.puzzle-reward p { font-size:0.78rem; color:#b8cece; line-height:1.45; }
+.puzzle-reward p strong { color:var(--retro-jaune); font-weight:600; }
+.puzzle-complete-msg { display:none; width:100%; max-width:320px; text-align:center; margin-top:10px; font-family:'Oswald',sans-serif; font-size:0.9rem; letter-spacing:0.1em; color:var(--retro-teal); text-transform:uppercase; cursor:pointer; }
+.puzzle-complete-msg.visible { display:block; }
+
+/* COMPLETION OVERLAY */
+.completion-overlay { display:none; position:fixed; inset:0; background:rgba(13,22,23,0.9); z-index:100; align-items:center; justify-content:center; flex-direction:column; gap:20px; }
+.completion-overlay.visible { display:flex; }
+.completion-card { background:var(--retro-teal); border:4px solid var(--retro-jaune); border-radius:20px; padding:36px 44px; text-align:center; max-width:440px; width:90%; }
+.completion-card .emoji { font-size:3rem; margin-bottom:12px; }
+.completion-card h2 { font-family:'Oswald',sans-serif; font-size:1.8rem; font-weight:700; letter-spacing:0.12em; color:var(--retro-jaune); text-transform:uppercase; text-shadow:2px 2px 0 var(--retro-ink); margin-bottom:12px; }
+.completion-card p { font-size:0.92rem; color:var(--retro-paper); line-height:1.6; margin-bottom:22px; }
+.completion-card p strong { color:var(--retro-jaune); }
+.completion-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-pix { background:var(--retro-jaune); color:var(--retro-ink); border:2.5px solid var(--retro-ink); border-radius:50px; padding:12px 28px; font-family:'Oswald',sans-serif; font-size:1rem; letter-spacing:0.08em; font-weight:700; text-transform:uppercase; cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
+.btn-pix:hover { transform:scale(1.05); box-shadow:0 4px 18px rgba(227,165,53,0.5); }
+.btn-close { background:transparent; color:var(--retro-paper); border:2px solid rgba(242,239,230,0.4); border-radius:50px; padding:12px 24px; font-family:'Oswald',sans-serif; font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+.btn-close:hover { background:rgba(242,239,230,0.1); border-color:var(--retro-paper); }
+
+footer { background:var(--retro-teal); padding:12px 32px; text-align:center; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; }
+footer span { font-family:'Oswald',sans-serif; font-size:0.78rem; letter-spacing:0.08em; color:var(--retro-jaune); text-transform:uppercase; }
+footer .dot { color:var(--retro-orange); font-size:0.9rem; }
+
+/* ── RESPONSIVE MOBILE ── */
+@media (max-width: 500px) {
+  body { padding: 10px; }
+
+  header { padding: 20px 24px 14px; }
+
+  .teaser { padding: 22px 18px; }
+  .teaser-title { font-size: 1.3rem; }
+  .teaser-desc { font-size: 0.82rem; }
+  .steps { gap: 6px; }
+  .step { font-size: 0.76rem; padding: 6px 12px; }
+  .step-arrow { display: none; }
+  .prize-badge { font-size: 0.82rem; padding: 8px 14px; text-align: center; }
+
+  .sep { padding: 0 16px; }
+
+  .accordion { margin: 0 12px 4px; }
+  .accordion-header { padding: 12px 14px; }
+  .accordion-header h2 { font-size: 0.85rem; }
+  .accordion-body { padding: 14px; }
+
+  .highlight-notice { transform: none; font-size: 0.88rem; padding: 16px 14px 14px; }
+
+  .game-zone { margin: 0 12px 20px; border-radius: 14px 5px 14px 5px; }
+  .qcm-panel { padding: 16px 14px; }
+  .puzzle-panel { padding: 16px 14px; }
+  .puzzle-wrap { max-width: 100%; }
+
+  .completion-card { padding: 24px 20px; }
+  .completion-card h2 { font-size: 1.4rem; }
+  .completion-btns { flex-direction: column; align-items: center; }
+  .btn-pix, .btn-close { width: 100%; text-align: center; }
+
+  footer { padding: 10px 16px; gap: 8px; }
+  footer .dot:nth-child(4), footer span:last-child { display: none; }
+}
+
+@media (min-width: 501px) and (max-width: 700px) {
+  body { padding: 14px; }
+  header { padding: 22px 32px 16px; }
+  .teaser { padding: 24px 24px; }
+  .sep { padding: 0 20px; }
+  .accordion { margin: 0 16px 4px; }
+  .game-zone { margin: 0 16px 24px; }
+  .highlight-notice { transform: none; }
+  .puzzle-wrap { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="page-frame" id="pageFrame">
+  <svg class="corner-svg tl" viewBox="0 0 72 72" fill="none">
+    <path d="M2 2 Q2 36 36 36 Q18 18 2 2Z" fill="#127676" opacity="0.7"/>
+    <path d="M2 2 C9 28 28 9 36 36 C18 28 9 18 2 2Z" fill="none" stroke="#127676" stroke-width="2"/>
+    <circle cx="7" cy="7" r="3" fill="#E3A535"/>
+    <circle cx="18" cy="16" r="2" fill="#127676"/>
+    <path d="M5 13 Q11 7 17 13 Q11 19 5 13Z" fill="#127676" opacity="0.5"/>
+    <path d="M14 24 Q20 18 26 24 Q20 30 14 24Z" fill="#E3A535" opacity="0.5"/>
+  </svg>
+  <svg class="corner-svg tr" viewBox="0 0 72 72" fill="none">
+    <path d="M2 2 Q2 36 36 36 Q18 18 2 2Z" fill="#127676" opacity="0.7"/>
+    <path d="M2 2 C9 28 28 9 36 36 C18 28 9 18 2 2Z" fill="none" stroke="#127676" stroke-width="2"/>
+    <circle cx="7" cy="7" r="3" fill="#E3A535"/>
+    <circle cx="18" cy="16" r="2" fill="#127676"/>
+    <path d="M5 13 Q11 7 17 13 Q11 19 5 13Z" fill="#127676" opacity="0.5"/>
+    <path d="M14 24 Q20 18 26 24 Q20 30 14 24Z" fill="#E3A535" opacity="0.5"/>
+  </svg>
+  <svg class="corner-svg bl" viewBox="0 0 72 72" fill="none">
+    <path d="M2 2 Q2 36 36 36 Q18 18 2 2Z" fill="#127676" opacity="0.7"/>
+    <path d="M2 2 C9 28 28 9 36 36 C18 28 9 18 2 2Z" fill="none" stroke="#127676" stroke-width="2"/>
+    <circle cx="7" cy="7" r="3" fill="#E3A535"/>
+    <circle cx="18" cy="16" r="2" fill="#127676"/>
+    <path d="M5 13 Q11 7 17 13 Q11 19 5 13Z" fill="#127676" opacity="0.5"/>
+    <path d="M14 24 Q20 18 26 24 Q20 30 14 24Z" fill="#E3A535" opacity="0.5"/>
+  </svg>
+  <svg class="corner-svg br" viewBox="0 0 72 72" fill="none">
+    <path d="M2 2 Q2 36 36 36 Q18 18 2 2Z" fill="#127676" opacity="0.7"/>
+    <path d="M2 2 C9 28 28 9 36 36 C18 28 9 18 2 2Z" fill="none" stroke="#127676" stroke-width="2"/>
+    <circle cx="7" cy="7" r="3" fill="#E3A535"/>
+    <circle cx="18" cy="16" r="2" fill="#127676"/>
+    <path d="M5 13 Q11 7 17 13 Q11 19 5 13Z" fill="#127676" opacity="0.5"/>
+    <path d="M14 24 Q20 18 26 24 Q20 30 14 24Z" fill="#E3A535" opacity="0.5"/>
+  </svg>
+
+  <header>
+    <h1>PIX</h1>
+    <p>Évaluation &amp; certification des compétences numériques</p>
+  </header>
+
+  <div class="teaser">
+    <p class="teaser-eyebrow">✦ Défi interactif ✦</p>
+    <h2 class="teaser-title">Reconstituez le puzzle,<br><span>débloquez PIX !</span></h2>
+    <p class="teaser-desc">
+      Répondez aux <strong>5 questions</strong> sur PIX : chaque bonne réponse fait glisser des pièces du puzzle le long de ses rails.
+      Complétez-le et gagnez un accès direct à un <strong>vrai test PIX — sans inscription</strong>.
+    </p>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span> Lisez la présentation</div>
+      <span class="step-arrow">→</span>
+      <div class="step"><span class="step-num">2</span> Répondez aux 5 questions</div>
+      <span class="step-arrow">→</span>
+      <div class="step"><span class="step-num">3</span> Puzzle complet = accès PIX</div>
+    </div>
+    <div class="prize-badge"><span class="trophy">🏆</span> Récompense : test PIX sans inscription</div>
+  </div>
+
+  <div class="sep">❧</div>
+  <div class="accordion">
+    <div class="accordion-header open" id="accHeader" onclick="toggleAccordion()">
+      <h2>📖 Qu'est-ce que PIX &amp; PIX Orga ? — Lisez avant de jouer</h2>
+      <span class="acc-icon" id="accIcon">▼</span>
+    </div>
+    <div class="accordion-body open" id="accBody">
+      <div class="acc-grid">
+        <div class="acc-card">
+          <h3>PIX — La plateforme publique</h3>
+          <p>Pix est une plateforme publique gratuite d'évaluation et de certification des compétences numériques. Pix a été créé en France puis adoptée par la Fédération Wallonie-Bruxelles.</p>
+          <ul>
+            <li>Elle est basée sur le référentiel <strong><a href="https://anto-py.github.io/DigComp_Swipe/" target="_blank" style="color:var(--retro-teal);text-decoration:underline dotted;">DigComp</a></strong> (5 domaines : information, communication, création de contenu, sécurité, résolution de problèmes)</li>
+            <li>Accumulation de points <strong>"pix"</strong> via des épreuves adaptatives</li>
+            <li><strong>Certification officielle</strong> en 6e secondaire FWB depuis 2022</li>
+            <li>Gratuit, accessible, progressif</li>
+          </ul>
+        </div>
+        <div class="acc-card">
+          <h3>PIX Orga — L'outil des enseignants</h3>
+          <p>PIX Orga est une interface dédiée aux établissements scolaires pour piloter les apprentissages numériques de leurs élèves :</p>
+          <ul>
+            <li>Les enseignants peuvent créer des <strong>campagnes</strong> d'évaluation ou de formation</li>
+            <li>Il suffit de partager un code avec l' élève. L'enseignant peut alors suivre les résultats de ses élèves par compétence. L'élève suit alors un parcours qui <strong>s'adapte automatiquement à sa situation individuelle</strong></li>
+            <li>Il existe de <strong>nombreux parcours thématiques</strong> selon les besoins. Par exemple: esprit critique, cybersécurité, communication et collaboration, CV et lettre de motivation, emails, éducation aux médias, exposés, réseaux sociaux, recherches, gestion et numérique, tableurs, FLA, élèves à besoins spécifiques... Et bien d'autres! </li>
+          </ul>
+        </div>
+        <div class="highlight-notice">
+          <span class="notice-badge">✦ Nouveauté ✦</span>
+          🎉 Notre école dispose d'un accès PIX Orga — à explorer ensemble dès maintenant ! Parlez-en à vos e-référents !
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep">✿</div>
+  <div class="game-zone">
+    <div class="qcm-panel">
+      <p class="panel-label">Questions</p>
+      <div class="progress-row">
+        <span class="q-label" id="qLabel">QUESTION 1 / 5</span>
+        <div class="progress-bg"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div id="qcmArea">
+        <div class="question-box">
+          <p class="question-text" id="questionText"></p>
+          <ul class="options-list" id="optionsList"></ul>
+        </div>
+        <div class="feedback-zone" aria-live="polite" id="feedbackZone"></div>
+        <div id="nextBtnWrap" style="display:none;">
+          <button class="pill-btn" onclick="nextQuestion()">
+            <span class="pill-label">Question suivante</span>
+            <span class="pill-icon">→</span>
+          </button>
+        </div>
+      </div>
+      <div class="quiz-done" id="quizDoneMsg">
+        <div class="big-trophy">🏆</div>
+        <p>Quiz complété !</p>
+        <small>Le puzzle se reconstitue — cliquez dessus pour découvrir PIX en action !</small>
+      </div>
+    </div>
+
+    <div class="puzzle-panel">
+      <div class="puzzle-header">
+        <p class="panel-label">Puzzle PIX</p>
+        <div class="piece-counter" id="pieceCounter"></div>
+      </div>
+      <div class="puzzle-wrap">
+        <div class="puzzle-container" id="puzzleContainer"
+             role="img" aria-label="Logo PIX — puzzle à reconstituer"
+             title="Accéder à la campagne PIX de démonstration"></div>
+      </div>
+      <div class="puzzle-reward" id="puzzleReward">
+        <span class="reward-icon">🔒</span>
+        <p>Reconstituez le puzzle pour <strong>débloquer un test PIX sans inscription</strong> !</p>
+      </div>
+      <div class="puzzle-complete-msg" id="puzzleCompleteMsg"
+           onclick="window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank')">
+        ▶ CLIQUEZ POUR DÉCOUVRIR PIX EN ACTION
+      </div>
+    </div>
+  </div>
+
+  <div class="sep">❧</div>
+  <footer>
+    <span>PIX — Compétences numériques</span>
+    <span class="dot">✦</span>
+    <span>Fédération Wallonie-Bruxelles</span>
+    <span class="dot">✦</span>
+    <span>FWB depuis 2022</span>
+  </footer>
+</div>
+
+<div class="completion-overlay" id="completionOverlay">
+  <div class="completion-card">
+    <div class="emoji">🎉</div>
+    <h2>Puzzle complété !</h2>
+    <p>Bravo ! Vous pouvez maintenant accéder à un <strong>vrai test PIX</strong> — sans inscription — et découvrir par vous-même comment fonctionne cette plateforme pensée pour vos élèves.</p>
+    <div class="completion-btns">
+      <button class="btn-pix" onclick="window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank'); closeOverlay()">🚀 Découvrir PIX maintenant</button>
+      <button class="btn-close" onclick="closeOverlay()">Plus tard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PIX_B64 = "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";
+
+// ── QCM STATE ──
+const qState = {
+  currentQuestion: 0,
+  hasAnsweredCorrectly: [false,false,false,false,false]
+};
+
+const questions = [
+  { text:"Sur quel référentiel européen PIX est-il basé ?", options:["DigCompEdu","DigComp","CEFR","PISA"], correct:1,
+    explanation:"PIX s'appuie sur <a href='https://anto-py.github.io/DigComp_Swipe/' target='_blank' style='color:var(--retro-teal);font-weight:600;'>DigComp</a> (Digital Competence Framework for Citizens) — à ne pas confondre avec DigCompEdu qui cible les enseignants." },
+  { text:"Combien de domaines de compétences DigComp couvre-t-il ?", options:["3","7","5","8"], correct:2,
+    explanation:"<a href='https://anto-py.github.io/DigComp_Swipe/' target='_blank' style='color:var(--retro-teal);font-weight:600;'>DigComp</a> couvre 5 domaines : information, communication, création de contenu, sécurité, résolution de problèmes." },
+  { text:"Qu'est-ce que PIX Orga permet aux enseignants de faire ?", options:["Corriger automatiquement les copies","Créer des campagnes et suivre les résultats","Générer des bulletins officiels","Remplacer les cours d'informatique"], correct:1,
+    explanation:"PIX Orga : créer des campagnes, partager un code, suivre les résultats par compétence." },
+  { text:"Notre école dispose-t-elle d'un PIX Orga", options:["Non","Oui mais personne ne sait qui s'en occupe","Oui, il suffit de demander à un e référent si je suis intéressé","C'est quoi un Pix Orga?"], correct:2,
+    explanation:"Les eréférents peuvent vous donner un accès pour que vous puissiez gérer en autonomie les campagnes que vous faites avec vos classes (Et vous expliquer comment ça fonctionne)" },
+  { text:"Quel est le principe de progression dans PIX ?", options:["L'élève choisit librement son niveau","Les questions s'adaptent automatiquement aux réponses précédantes","Le score est basé sur le temps de réponse","L'enseignant attribue les points"], correct:1,
+    explanation:"PIX fonctionne par épreuves adaptatives : la difficulté s'ajuste et l'élève accumule des \"pix\" au fil des réussites." }
+];
+
+const BRAVO = [
+  "<a href='https://anto-py.github.io/DigComp_Swipe/' target='_blank' style='color:var(--retro-teal);font-weight:600;'>DigComp</a> est bien le bon référentiel !",
+  "5 domaines, c'est bien ça !","PIX Orga : l'outil des enseignants !",
+  "Vos e-référents sont là pour vous accompagner !","Épreuves adaptatives, c'est le cœur de PIX !"
+];
+
+// ── SLIDING PUZZLE ENGINE ──
+let cellSize = 100;
+let currentGrid = []; // 9 positions, value = pieceIdx (0-7) or -1 (empty)
+let moveGroups = [];  // 5 groups of {from,to} slide moves
+let isAnimating = false;
+
+function getAdj(pos) {
+  const r = Math.floor(pos/3), c = pos%3, a = [];
+  if(r>0) a.push(pos-3); if(r<2) a.push(pos+3);
+  if(c>0) a.push(pos-1); if(c<2) a.push(pos+1);
+  return a;
+}
+
+function heuristic(s) {
+  let d = 0;
+  for(let p=0;p<9;p++){const v=s[p];if(v<0)continue;d+=Math.abs(Math.floor(p/3)-Math.floor(v/3))+Math.abs(p%3-v%3);}
+  return d;
+}
+
+function aStar(start) {
+  const GOAL = '0,1,2,3,4,5,6,7,-1';
+  if(start.join(',')===GOAL) return [];
+  const open=[{s:start,g:0,moves:[]}];
+  const best=new Map([[start.join(','),0]]);
+  let iter=0;
+  while(open.length && iter++<80000){
+    let mi=0,mf=Infinity;
+    for(let i=0;i<open.length;i++){const f=open[i].g+heuristic(open[i].s);if(f<mf){mf=f;mi=i;}}
+    const node=open.splice(mi,1)[0];
+    if(node.s.join(',')===GOAL) return node.moves;
+    const e=node.s.indexOf(-1);
+    for(const adj of getAdj(e)){
+      const ns=[...node.s]; ns[e]=ns[adj]; ns[adj]=-1;
+      const nk=ns.join(','); const ng=node.g+1;
+      if(!best.has(nk)||best.get(nk)>ng){best.set(nk,ng);open.push({s:ns,g:ng,moves:[...node.moves,{from:adj,to:e}]});}
+    }
+  }
+  return [];
+}
+
+function generateShuffle(n=55){
+  let s=[0,1,2,3,4,5,6,7,-1],prev=-1;
+  for(let i=0;i<n;i++){
+    const e=s.indexOf(-1);
+    const adj=getAdj(e).filter(p=>p!==prev);
+    const pick=adj[Math.floor(Math.random()*adj.length)];
+    const ns=[...s];ns[e]=ns[pick];ns[pick]=-1;prev=e;s=ns;
+  }
+  return s;
+}
+
+function initPuzzle(){
+  const container=document.getElementById('puzzleContainer');
+  // Use clientWidth for inner size (no border)
+  const sz=container.clientWidth||container.offsetWidth||300;
+  cellSize=sz/3;
+
+  currentGrid=generateShuffle(55);
+  const sol=aStar(currentGrid);
+  moveGroups=[];
+  for(let i=0;i<5;i++){
+    moveGroups.push(sol.slice(Math.floor(i*sol.length/5),Math.floor((i+1)*sol.length/5)));
+  }
+
+  container.innerHTML='';
+
+  // Empty cell indicator
+  const emptyEl=document.createElement('div');
+  emptyEl.className='empty-cell'; emptyEl.id='emptyCell';
+  emptyEl.style.width=cellSize+'px'; emptyEl.style.height=cellSize+'px';
+  container.appendChild(emptyEl);
+
+  // 8 pieces
+  for(let pi=0;pi<8;pi++){
+    const el=document.createElement('div');
+    el.className='puzzle-piece unplaced';
+    el.id='piece-'+pi;
+    const cCol=pi%3, cRow=Math.floor(pi/3);
+    const curPos=currentGrid.indexOf(pi);
+    const curCol=curPos%3, curRow=Math.floor(curPos/3);
+    el.style.cssText=`width:${cellSize}px;height:${cellSize}px;left:${curCol*cellSize}px;top:${curRow*cellSize}px;background-image:url("data:image/png;base64,${PIX_B64}");background-size:${sz}px ${sz}px;background-position:-${cCol*cellSize}px -${cRow*cellSize}px;transition:none;filter:brightness(0.35);`;
+    container.appendChild(el);
+  }
+  syncEmptyCell(false);
+  updatePieceStates();
+  initPieceCounter();
+}
+
+function syncEmptyCell(animate){
+  const el=document.getElementById('emptyCell');
+  if(!el)return;
+  const ep=currentGrid.indexOf(-1);
+  el.style.transition=animate?'left 0.28s ease,top 0.28s ease':'none';
+  el.style.left=(ep%3*cellSize)+'px';
+  el.style.top=(Math.floor(ep/3)*cellSize)+'px';
+  el.style.width=cellSize+'px'; el.style.height=cellSize+'px';
+}
+
+function slideMove(move, duration=280){
+  return new Promise(resolve=>{
+    const pi=currentGrid[move.from];
+    if(pi<0){resolve();return;}
+    const el=document.getElementById('piece-'+pi);
+    if(!el){resolve();return;}
+    const toCol=move.to%3, toRow=Math.floor(move.to/3);
+    el.style.transition=`left ${duration}ms ease,top ${duration}ms ease`;
+    el.style.left=(toCol*cellSize)+'px';
+    el.style.top=(toRow*cellSize)+'px';
+    currentGrid[move.to]=currentGrid[move.from];
+    currentGrid[move.from]=-1;
+    syncEmptyCell(true);
+    setTimeout(resolve, duration+15);
+  });
+}
+
+async function runGroup(qi){
+  if(isAnimating)return;
+  isAnimating=true;
+  const container=document.getElementById('puzzleContainer');
+  const flash=document.createElement('div');
+  flash.className='puzzle-flash';
+  container.appendChild(flash);
+  setTimeout(()=>flash.remove(),450);
+
+  const moves=moveGroups[qi]||[];
+  for(const move of moves){
+    await slideMove(move);
+    await new Promise(r=>setTimeout(r,30));
+  }
+  updatePieceStates();
+  isAnimating=false;
+
+  if(currentGrid.join(',')===('0,1,2,3,4,5,6,7,-1') || qi===4){
+    // small delay then complete
+    await new Promise(r=>setTimeout(r,300));
+    if(currentGrid.join(',')===('0,1,2,3,4,5,6,7,-1')) completePuzzle();
+    else if(qi===4) completePuzzle(); // force on last question
+  }
+}
+
+function updatePieceStates(){
+  for(let pi=0;pi<8;pi++){
+    const pos=currentGrid.indexOf(pi);
+    const el=document.getElementById('piece-'+pi);
+    if(!el)continue;
+    if(pos===pi){el.classList.remove('unplaced','placing');el.classList.add('placed');}
+  }
+  // Piece counter dots
+  let placed=0;
+  for(let pi=0;pi<8;pi++){if(currentGrid.indexOf(pi)===pi)placed++;}
+  for(let i=0;i<8;i++){
+    const d=document.getElementById('dot-'+i);
+    if(d) d.classList.toggle('filled',i<placed);
+  }
+}
+
+function initPieceCounter(){
+  const c=document.getElementById('pieceCounter');
+  c.innerHTML='';
+  for(let i=0;i<8;i++){
+    const d=document.createElement('div');
+    d.className='piece-dot'; d.id='dot-'+i;
+    c.appendChild(d);
+  }
+}
+
+function completePuzzle(){
+  // Reveal all pieces with staggered brightness animation
+  for(let pi=0;pi<8;pi++){
+    const el=document.getElementById('piece-'+pi);
+    if(!el)continue;
+    setTimeout(()=>{
+      el.style.transition='filter 0.6s ease';
+      el.style.filter='brightness(1)';
+    }, pi*80);
+  }
+
+  // Fade in full image overlay
+  const container=document.getElementById('puzzleContainer');
+  const sz=container.clientWidth||container.offsetWidth||300;
+  const ov=document.createElement('div');
+  ov.style.cssText=`position:absolute;inset:0;z-index:10;background-image:url("data:image/png;base64,${PIX_B64}");background-size:100% 100%;opacity:0;transition:opacity 0.8s ease;cursor:pointer;border-radius:2px;`;
+  ov.onclick=()=>window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank');
+  container.appendChild(ov);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ov.style.opacity='1';}));
+  container.classList.add('complete');
+  document.getElementById('puzzleReward').innerHTML='<span class="reward-icon">🔓</span><p><strong>Débloqué !</strong> Cliquez sur le puzzle pour lancer votre test PIX.</p>';
+  document.getElementById('puzzleCompleteMsg').classList.add('visible');
+  setTimeout(()=>document.getElementById('completionOverlay').classList.add('visible'),1000);
+}
+
+// ── QCM ──
+const LETTERS=['A','B','C','D'];
+function renderQuestion(){
+  const q=questions[qState.currentQuestion], n=qState.currentQuestion;
+  document.getElementById('qLabel').textContent=`QUESTION ${n+1} / 5`;
+  document.getElementById('progressFill').style.width=`${n/5*100}%`;
+  document.getElementById('questionText').textContent=q.text;
+  const list=document.getElementById('optionsList');
+  list.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const li=document.createElement('li');
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.innerHTML=`<span class="opt-letter">${LETTERS[i]}</span>${opt}`;
+    btn.onclick=()=>handleAnswer(i);
+    li.appendChild(btn); list.appendChild(li);
+  });
+  document.getElementById('feedbackZone').innerHTML='';
+  document.getElementById('nextBtnWrap').style.display='none';
+}
+
+function handleAnswer(chosen){
+  const q=questions[qState.currentQuestion], qi=qState.currentQuestion;
+  const buttons=document.querySelectorAll('.option-btn');
+  if(chosen===q.correct){
+    buttons.forEach((btn,i)=>{btn.disabled=true;if(i===chosen)btn.classList.add('correct');});
+    document.getElementById('feedbackZone').innerHTML=`<div class="feedback-box success">✓ Excellent ! ${BRAVO[qi]}</div>`;
+    if(!qState.hasAnsweredCorrectly[qi]){
+      qState.hasAnsweredCorrectly[qi]=true;
+      runGroup(qi);
+    }
+    document.getElementById('nextBtnWrap').style.display='block';
+  } else {
+    buttons[chosen].classList.add('wrong'); buttons[chosen].disabled=true;
+    document.getElementById('feedbackZone').innerHTML=`<div class="feedback-box error">✗ Pas tout à fait… <em>${q.explanation}</em></div>`;
+  }
+}
+
+function nextQuestion(){
+  qState.currentQuestion++;
+  if(qState.currentQuestion>=questions.length){
+    document.getElementById('qcmArea').style.display='none';
+    document.getElementById('quizDoneMsg').classList.add('visible');
+    document.getElementById('progressFill').style.width='100%';
+    document.getElementById('qLabel').textContent='COMPLÉTÉ !';
+    return;
+  }
+  renderQuestion();
+}
+
+function closeOverlay(){ document.getElementById('completionOverlay').classList.remove('visible'); }
+
+function toggleAccordion(){
+  document.getElementById('accHeader').classList.toggle('open');
+  document.getElementById('accBody').classList.toggle('open');
+  document.getElementById('accIcon'); // icon rotation handled by CSS .open
+}
+
+// Resize: redraw current state
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{
+    const container=document.getElementById('puzzleContainer');
+    const sz=container.clientWidth||container.offsetWidth||300;
+    const newCell=sz/3;
+    cellSize=newCell;
+    for(let pi=0;pi<8;pi++){
+      const el=document.getElementById('piece-'+pi);
+      if(!el)continue;
+      const pos=currentGrid.indexOf(pi);
+      const col=pos%3,row=Math.floor(pos/3);
+      const cCol=pi%3,cRow=Math.floor(pi/3);
+      const wasBright = el.style.filter === 'brightness(1)';
+      el.style.transition='none';
+      el.style.width=newCell+'px'; el.style.height=newCell+'px';
+      el.style.left=(col*newCell)+'px'; el.style.top=(row*newCell)+'px';
+      el.style.backgroundSize=`${sz}px ${sz}px`;
+      el.style.backgroundPosition=`-${cCol*newCell}px -${cRow*newCell}px`;
+      if(!wasBright) el.style.filter='brightness(0.35)';
+    }
+    syncEmptyCell(false);
+  },200);
+});
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderQuestion();
+  // Small delay to let layout settle before measuring puzzle size
+  setTimeout(initPuzzle, 80);
+});
+</script>
+</body>
+</html>
