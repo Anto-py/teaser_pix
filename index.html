@@ -416,7 +416,7 @@ footer .dot { color:var(--retro-orange); font-size:0.9rem; }
         <p>Reconstituez le puzzle pour <strong>débloquer un test PIX sans inscription</strong> !</p>
       </div>
       <div class="puzzle-complete-msg" id="puzzleCompleteMsg"
-           onclick="window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank')">
+           onclick="window.open('https://pix.org/fr-be/parcours-thematiques#slice-1','_blank')">
         ▶ CLIQUEZ POUR DÉCOUVRIR PIX EN ACTION
       </div>
     </div>
@@ -438,7 +438,7 @@ footer .dot { color:var(--retro-orange); font-size:0.9rem; }
     <h2>Puzzle complété !</h2>
     <p>Bravo ! Vous pouvez maintenant accéder à un <strong>vrai test PIX</strong> — sans inscription — et découvrir par vous-même comment fonctionne cette plateforme pensée pour vos élèves.</p>
     <div class="completion-btns">
-      <button class="btn-pix" onclick="window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank'); closeOverlay()">🚀 Découvrir PIX maintenant</button>
+      <button class="btn-pix" onclick="window.open('https://pix.org/fr-be/parcours-thematiques#slice-1','_blank'); closeOverlay()">🚀 Découvrir PIX maintenant</button>
       <button class="btn-close" onclick="closeOverlay()">Plus tard</button>
     </div>
   </div>
@@ -654,7 +654,7 @@ function completePuzzle(){
   const sz=container.clientWidth||container.offsetWidth||300;
   const ov=document.createElement('div');
   ov.style.cssText=`position:absolute;inset:0;z-index:10;background-image:url("data:image/png;base64,${PIX_B64}");background-size:100% 100%;opacity:0;transition:opacity 0.8s ease;cursor:pointer;border-radius:2px;`;
-  ov.onclick=()=>window.open('https://app.pix.org/campagnes/JFUUQW756/presentation','_blank');
+  ov.onclick=()=>window.open('https://pix.org/fr-be/parcours-thematiques#slice-1','_blank');
   container.appendChild(ov);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ov.style.opacity='1';}));
   container.classList.add('complete');
